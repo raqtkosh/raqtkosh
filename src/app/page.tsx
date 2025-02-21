@@ -3,16 +3,26 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { UserButton, useUser } from "@clerk/nextjs";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();
+  const { isSignedIn } = useUser();
+
+  // Redirect to dashboard if user is already signed in
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push("/dashboard");
+    }
+  }, [isSignedIn, router]);
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-pink-50 to-red-50 font-sans">
       {/* Header with Navigation Links */}
       <div className="w-full flex justify-between items-center p-6 max-w-6xl mx-auto text-black backdrop-blur-md bg-white/30 rounded-lg shadow-sm mt-4">
         <h1 className="text-5xl font-bold font-barlow">RaqtKosh</h1>
-        <nav className="flex gap-6">
+        <nav className="flex gap-6 items-center">
           <button
             onClick={() => router.push("/about")}
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
@@ -20,41 +30,40 @@ export default function Home() {
             About Us
           </button>
           <button
-            onClick={() => router.push("/find-blood")}
+            onClick={() => router.push("/GetBlood")}
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Looking for Blood
           </button>
           <button
-            onClick={() => router.push("/donate")}
+            onClick={() => router.push("/DonateBlood")}
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Want to Donate Blood
           </button>
-          <button
-            onClick={() => router.push("/login")}
-            className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
-          >
-            Blood Bank Login
-          </button>
+          {isSignedIn ? (
+            <UserButton afterSignOutUrl="/" />
+          ) : (
+            <button
+              onClick={() => router.push("/sign-in")}
+              className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
+            >
+              Blood Bank Login
+            </button>
+          )}
         </nav>
       </div>
 
       {/* Hero Section */}
       <div className="relative w-full h-[60vh] mt-8">
-        {/* Full-Page Image */}
         <Image
-          src="/images/first.webp" // Replace with your image
+          src="/images/first.webp"
           alt="Blood Donation"
           layout="fill"
           objectFit="cover"
           className="z-0 rounded-lg"
         />
-
-        {/* Semi-Transparent Overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-20 z-10 rounded-lg"></div>
-
-        {/* Hero Content */}
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-20">
           <h2 className="text-5xl font-bold mb-6 text-white drop-shadow-lg">
             Donate Blood, Save Lives
@@ -65,13 +74,13 @@ export default function Home() {
           <div className="flex justify-center gap-4">
             <Button
               className="bg-white text-red-500 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-red-100 hover:scale-105 transition-transform duration-300"
-              onClick={() => router.push("/signup")}
+              onClick={() => router.push("/sign-up")}
             >
               Join Us
             </Button>
             <Button
               className="bg-white text-red-500 font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-red-100 hover:scale-105 transition-transform duration-300"
-              onClick={() => router.push("/donate")}
+              onClick={() => router.push("/DonateBlood")}
             >
               Donate Blood
             </Button>

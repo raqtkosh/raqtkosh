@@ -1,6 +1,6 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,12 +15,12 @@ export default function Chatbot() {
     hospital: "",
   });
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   // Simulate typing effect
   const simulateTyping = (message: string, callback: () => void) => {
-    setIsTyping(true); // Show "Typing..."
+    setIsTyping(true);
     setTimeout(() => {
-      setIsTyping(false); // Hide "Typing..."
       let index = 0;
       const typingInterval = setInterval(() => {
         if (index < message.length) {
@@ -31,6 +31,7 @@ export default function Chatbot() {
           index++;
         } else {
           clearInterval(typingInterval);
+          setIsTyping(false);
           callback();
         }
       }, 50); // Adjust typing speed here
@@ -55,8 +56,8 @@ export default function Chatbot() {
 
       case "donate_option":
         if (response === "home") {
-          simulateTyping("Please provide your name.", () => {
-            setCurrentStep("donate_home_name");
+          simulateTyping("You can sign up to get more benefits. Do you still want to continue?", () => {
+            setCurrentStep("donate_home_signup");
           });
         } else if (response === "camp") {
           simulateTyping("Here are some nearby donation camps:\n- Camp A\n- Camp B\n- Camp C\n- Camp D", () => {
@@ -65,25 +66,26 @@ export default function Chatbot() {
         }
         break;
 
-      case "donate_home_name":
-        setUserDetails({ ...userDetails, name: response });
-        simulateTyping("Please provide your phone number.", () => {
-          setCurrentStep("donate_home_phone");
-        });
+      case "donate_home_signup":
+        if (response === "signup") {
+          router.push("/sign-up");
+        } else if (response === "continue") {
+          simulateTyping("Please fill in your basic details.", () => {
+            setCurrentStep("donate_home_details");
+          });
+        }
         break;
 
-      case "donate_home_phone":
-        setUserDetails({ ...userDetails, phone: response });
-        simulateTyping("Please provide your address.", () => {
-          setCurrentStep("donate_home_address");
-        });
-        break;
-
-      case "donate_home_address":
-        setUserDetails({ ...userDetails, address: response });
-        simulateTyping("Thank you! We will contact you shortly.", () => {
-          setCurrentStep("initial");
-        });
+      case "donate_home_details":
+        if (userDetails.name && userDetails.phone && userDetails.address) {
+          simulateTyping("Thank you! We will contact you shortly.", () => {
+            setCurrentStep("initial");
+          });
+        } else {
+          simulateTyping("Please provide your name, phone number, and address.", () => {
+            setCurrentStep("donate_home_details");
+          });
+        }
         break;
 
       case "get_blood_doctor":
@@ -100,8 +102,8 @@ export default function Chatbot() {
 
       case "get_blood_option":
         if (response === "hospital") {
-          simulateTyping("Please provide your name.", () => {
-            setCurrentStep("get_blood_hospital_name");
+          simulateTyping("You can sign up to get more rewards. Do you still want to continue?", () => {
+            setCurrentStep("get_blood_hospital_signup");
           });
         } else if (response === "center") {
           simulateTyping("Here are some nearby centers:\n- Center X\n- Center Y\n- Center Z", () => {
@@ -110,32 +112,26 @@ export default function Chatbot() {
         }
         break;
 
-      case "get_blood_hospital_name":
-        setUserDetails({ ...userDetails, name: response });
-        simulateTyping("Please provide your phone number.", () => {
-          setCurrentStep("get_blood_hospital_phone");
-        });
-        break;
-
-      case "get_blood_hospital_phone":
-        setUserDetails({ ...userDetails, phone: response });
-        simulateTyping("Please provide the hospital name.", () => {
-          setCurrentStep("get_blood_hospital_details");
-        });
+      case "get_blood_hospital_signup":
+        if (response === "signup") {
+          router.push("/sign-up");
+        } else if (response === "continue") {
+          simulateTyping("Please fill in your basic details.", () => {
+            setCurrentStep("get_blood_hospital_details");
+          });
+        }
         break;
 
       case "get_blood_hospital_details":
-        setUserDetails({ ...userDetails, hospital: response });
-        simulateTyping("Please upload the prescription or blood receipt.", () => {
-          setCurrentStep("get_blood_hospital_upload");
-        });
-        break;
-
-      case "get_blood_hospital_upload":
-        simulateTyping("Request generated. If details are correct, we will deliver your blood within 30 minutes.", () => {
-          setCurrentStep("initial");
-          saveDataToDatabase(); // Save data to database
-        });
+        if (userDetails.name && userDetails.phone && userDetails.hospital) {
+          simulateTyping("Thank you! We will contact you shortly.", () => {
+            setCurrentStep("initial");
+          });
+        } else {
+          simulateTyping("Please provide your name, phone number, and hospital name.", () => {
+            setCurrentStep("get_blood_hospital_details");
+          });
+        }
         break;
 
       default:
@@ -143,37 +139,20 @@ export default function Chatbot() {
     }
   };
 
-  // Save data to database
-  const saveDataToDatabase = () => {
-    console.log("Saving data to database:", userDetails);
-    // Add your database saving logic here
-  };
-
-  // Clear temporary data when chatbot is closed
-  const clearTemporaryData = () => {
-    setUserDetails({
-      name: "",
-      phone: "",
-      address: "",
-      hospital: "",
-    });
-    setChatHistory([]);
-    setCurrentStep("initial");
-  };
-
   // Auto-scroll to the latest message
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [chatHistory, isTyping]);
+  }, [chatHistory]);
 
   // Close chatbot when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isOpen && !(event.target as HTMLElement).closest(".chatbot-container")) {
         setIsOpen(false);
-        clearTemporaryData(); // Clear temporary data
+        setChatHistory([]);
+        setCurrentStep("initial");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -183,16 +162,10 @@ export default function Chatbot() {
   return (
     <div className="fixed bottom-4 right-4">
       {isOpen ? (
-        <div className="w-80 h-96 bg-gradient-to-br from-pink-100 to-red-100 backdrop-blur-md border border-white/20 shadow-2xl rounded-xl flex flex-col chatbot-container">
-          <div className="p-4 bg-gradient-to-r from-red-500 to-pink-500 text-white rounded-t-xl flex justify-between items-center">
-            <h3 className="font-bold font-poppins">RaqtKosh Chatbot</h3>
-            <button
-              onClick={() => {
-                setIsOpen(false);
-                clearTemporaryData(); // Clear temporary data
-              }}
-              className="text-white hover:text-gray-200 transition-colors"
-            >
+        <div className="w-80 h-96 bg-white shadow-lg rounded-lg flex flex-col chatbot-container">
+          <div className="p-4 bg-red-500 text-white rounded-t-lg flex justify-between items-center">
+            <h3 className="font-bold">RaqtKosh Chatbot</h3>
+            <button onClick={() => setIsOpen(false)} className="text-white">
               ×
             </button>
           </div>
@@ -203,7 +176,7 @@ export default function Chatbot() {
                 className={`mb-2 ${chat.sender === "user" ? "text-right" : "text-left"}`}
               >
                 <span
-                  className={`inline-block p-2 rounded-lg ${chat.sender === "user" ? "bg-gradient-to-r from-red-500 to-pink-500 text-white" : "bg-white text-gray-800"}`}
+                  className={`inline-block p-2 rounded-lg ${chat.sender === "user" ? "bg-red-500 text-white" : "bg-gray-200 text-black"}`}
                 >
                   {chat.message}
                 </span>
@@ -211,22 +184,22 @@ export default function Chatbot() {
             ))}
             {isTyping && (
               <div className="text-left">
-                <span className="inline-block p-2 rounded-lg bg-white text-gray-800">Typing...</span>
+                <span className="inline-block p-2 rounded-lg bg-gray-200 text-black">Typing...</span>
               </div>
             )}
           </div>
-          <div className="p-4 border-t border-white/20">
+          <div className="p-4 border-t">
             {currentStep === "initial" && (
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => handleUserResponse("donate blood")}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   Donate Blood
                 </button>
                 <button
                   onClick={() => handleUserResponse("get blood")}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   Get Blood
                 </button>
@@ -236,54 +209,87 @@ export default function Chatbot() {
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => handleUserResponse("home")}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   Home
                 </button>
                 <button
                   onClick={() => handleUserResponse("camp")}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   Donation Camp
                 </button>
               </div>
             )}
-            {(currentStep === "donate_home_name" ||
-              currentStep === "donate_home_phone" ||
-              currentStep === "donate_home_address" ||
-              currentStep === "get_blood_hospital_name" ||
-              currentStep === "get_blood_hospital_phone" ||
-              currentStep === "get_blood_hospital_details") && (
+            {currentStep === "donate_home_signup" && (
               <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => handleUserResponse("signup")}
+                  className="bg-red-500 text-white p-2 rounded-lg"
+                >
+                  Signup
+                </button>
+                <button
+                  onClick={() => handleUserResponse("continue")}
+                  className="bg-red-500 text-white p-2 rounded-lg"
+                >
+                  Continue
+                </button>
+              </div>
+            )}
+            {currentStep === "donate_home_details" && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleUserResponse(`name:${userDetails.name}`);
+                  handleUserResponse(`phone:${userDetails.phone}`);
+                  handleUserResponse(`address:${userDetails.address}`);
+                }}
+                className="flex flex-col gap-2"
+              >
                 <input
                   type="text"
-                  value={userInput}
-                  onChange={(e) => setUserInput(e.target.value)}
-                  className="w-full p-2 border border-white/20 rounded-lg bg-white/50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder="Type here..."
+                  value={userDetails.name}
+                  onChange={(e) => setUserDetails({ ...userDetails, name: e.target.value })}
+                  className="w-full p-2 border rounded-lg"
+                  placeholder="Name"
+                  required
+                />
+                <input
+                  type="text"
+                  value={userDetails.phone}
+                  onChange={(e) => setUserDetails({ ...userDetails, phone: e.target.value })}
+                  className="w-full p-2 border rounded-lg"
+                  placeholder="Mobile Number"
+                  required
+                />
+                <input
+                  type="text"
+                  value={userDetails.address}
+                  onChange={(e) => setUserDetails({ ...userDetails, address: e.target.value })}
+                  className="w-full p-2 border rounded-lg"
+                  placeholder="Address"
+                  required
                 />
                 <button
-                  onClick={() => {
-                    handleUserResponse(userInput);
-                    setUserInput("");
-                  }}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  type="submit"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   Submit
                 </button>
-              </div>
+              </form>
             )}
             {currentStep === "get_blood_doctor" && (
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => handleUserResponse("yes")}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   Yes
                 </button>
                 <button
                   onClick={() => handleUserResponse("no")}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   No
                 </button>
@@ -293,17 +299,75 @@ export default function Chatbot() {
               <div className="flex flex-col gap-2">
                 <button
                   onClick={() => handleUserResponse("hospital")}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   Hospital
                 </button>
                 <button
                   onClick={() => handleUserResponse("center")}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 text-white p-2 rounded-lg hover:from-red-600 hover:to-pink-600 transition-all shadow-md"
+                  className="bg-red-500 text-white p-2 rounded-lg"
                 >
                   Nearby Center
                 </button>
               </div>
+            )}
+            {currentStep === "get_blood_hospital_signup" && (
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => handleUserResponse("signup")}
+                  className="bg-red-500 text-white p-2 rounded-lg"
+                >
+                  Signup
+                </button>
+                <button
+                  onClick={() => handleUserResponse("continue")}
+                  className="bg-red-500 text-white p-2 rounded-lg"
+                >
+                  Continue
+                </button>
+              </div>
+            )}
+            {currentStep === "get_blood_hospital_details" && (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleUserResponse(`name:${userDetails.name}`);
+                  handleUserResponse(`phone:${userDetails.phone}`);
+                  handleUserResponse(`hospital:${userDetails.hospital}`);
+                }}
+                className="flex flex-col gap-2"
+              >
+                <input
+                  type="text"
+                  value={userDetails.name}
+                  onChange={(e) => setUserDetails({ ...userDetails, name: e.target.value })}
+                  className="w-full p-2 border rounded-lg"
+                  placeholder="Name"
+                  required
+                />
+                <input
+                  type="text"
+                  value={userDetails.phone}
+                  onChange={(e) => setUserDetails({ ...userDetails, phone: e.target.value })}
+                  className="w-full p-2 border rounded-lg"
+                  placeholder="Mobile Number"
+                  required
+                />
+                <input
+                  type="text"
+                  value={userDetails.hospital}
+                  onChange={(e) => setUserDetails({ ...userDetails, hospital: e.target.value })}
+                  className="w-full p-2 border rounded-lg"
+                  placeholder="Hospital Name"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="bg-red-500 text-white p-2 rounded-lg"
+                >
+                  Submit
+                </button>
+              </form>
             )}
           </div>
         </div>
