@@ -77,6 +77,9 @@ body {
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 }
+html, body {
+  height: 100%;
+}
 
 /* @layer base {
   * {
@@ -86,4 +89,7 @@ body {
     @apply bg-background text-foreground;
   }
 } */
+
+
+
 

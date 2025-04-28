@@ -1,4 +1,4 @@
-
+// schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,14 +10,237 @@ datasource db {
 }
 
 enum Role {
-  ADMIN
   USER
-  SUPERADMIN
+  HOSPITAL
+  ADMIN
+  SUPER_ADMIN
 }
 
-model User{
-  id String @id @default(uuid())
-  name String
-  email String @unique
+enum BloodType {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
 
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
+
+enum RequestStatus {
+  PENDING
+  FULFILLED
+  CANCELLED
+  EXPIRED
+}
+
+enum RewardTier {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+
+enum ReferralStatus {
+  PENDING
+  COMPLETED
+}
+
+model User {
+  id          String      @id @default(uuid())
+  clerkId     String      @unique
+  email       String      @unique
+  firstName   String?
+  lastName    String?
+  phoneNumber String?
+  bloodType   BloodType?
+  role        Role        @default(USER)
+  points      Int         @default(0)
+  rewardTier  RewardTier?
+  lastDonation DateTime?
+  nextDonation DateTime?
+  addresses   Address[]
+  donations   Donation[]
+  requests    Request[]
+  rewards     UserReward[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  
+
+  @@index([clerkId])
+  Notification Notification[]
+  GetBloodRequest GetBloodRequest[]
+   referrals Referral[] @relation("ReferrerToReferrals")
+ 
+ 
+  
+}
+
+model Address {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  street      String
+  city        String
+  state       String
+  postalCode  String
+  country     String   @default("India")
+  isPrimary   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  Request Request[]
+
+  @@index([userId])
+}
+
+model Donation {
+  id          String         @id @default(uuid())
+  userId      String
+  user        User           @relation(fields: [userId], references: [id])
+  centerId    String?
+  center      DonationCenter? @relation(fields: [centerId], references: [id])
+  date        DateTime
+  bloodType   BloodType
+  quantity    Int            @default(450) // in ml
+  status      DonationStatus @default(PENDING)
+  pointsEarned Int           @default(10)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([centerId])
+  @@index([userId])
+}
+
+model Request {
+  id          String       @id @default(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  bloodType   BloodType
+  quantity    Int          @default(1) // in units
+  status      RequestStatus @default(PENDING)
+  urgency     String       @default("normal") // normal, urgent, emergency
+  addressId   String
+  address     Address      @relation(fields: [addressId], references: [id])
+  hospital    String?
+  patientName String?
+  reason      String?
+  assignedTo  String?      // Admin ID who is handling this
+  fulfilledAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([addressId])
+  @@index([userId])
+}
+
+model DonationCenter {
+  id          String     @id @default(uuid())
+  name        String
+  address     String
+  city        String
+  state       String
+  postalCode  String
+  phone       String
+  bloodInventory BloodInventory[]
+  donations   Donation[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model BloodInventory {
+  id          String         @id @default(uuid())
+  centerId    String
+  center      DonationCenter @relation(fields: [centerId], references: [id])
+  bloodType   BloodType
+  quantity    Int            @default(0) // in units
+  lastUpdated DateTime       @default(now())
+
+  @@index([centerId])
+}
+
+model Reward {
+  id          String     @id @default(uuid())
+  name        String
+  description String
+  pointsCost  Int
+  tier        RewardTier
+  isActive    Boolean    @default(true)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  UserReward UserReward[]
+}
+
+model UserReward {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  rewardId    String
+  reward      Reward   @relation(fields: [rewardId], references: [id])
+  redeemedAt  DateTime @default(now())
+  isUsed      Boolean  @default(false)
+
+  @@index([userId])
+  @@index([rewardId])
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  message     String
+  isRead      Boolean  @default(false)
+  type        String   // 'request', 'donation', 'reward', etc.
+  relatedId   String?  // ID of related entity
+  createdAt   DateTime @default(now())
+  readAt      DateTime?
+
+  @@index([userId])
+}
+
+
+// Add this to your schema.prisma
+model GetBloodRequest {
+  id          String       @id @default(uuid())
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+  hospital    String
+  address     String
+  bloodType   BloodType
+  quantity    Int
+  urgency     String       // normal, urgent, emergency
+  status      RequestStatus @default(PENDING)
+  createdAt   DateTime     @default(now())
+  
+  // For admin actions
+  assignedTo  String?      // Admin ID who is handling this
+  fulfilledAt DateTime?
+  
+  @@index([userId])
+  @@index([status])
+}
+model Referral {
+  id          String        @id @default(uuid())
+  referrerId  String
+  referrer    User          @relation("ReferrerToReferrals", fields: [referrerId], references: [id])
+  name        String
+  phoneNumber String
+  status      ReferralStatus @default(PENDING) // Using the enum now
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([referrerId, phoneNumber])
+  @@index([referrerId])
+  @@index([phoneNumber])
+  // Remove "User User[]" - not needed
 }

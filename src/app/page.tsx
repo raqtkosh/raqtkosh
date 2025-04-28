@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -40,7 +41,9 @@ export default function Home() {
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Want to Donate Blood
-          </button>
+            </button>
+          
+      
           {isSignedIn ? (
             <UserButton afterSignOutUrl="/" />
           ) : (
@@ -87,11 +90,9 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* Key Features, Testimonials, and Statistics Sections */}
       <div className="w-full py-20">
         <div className="w-full max-w-6xl px-4 mx-auto">
-          {/* Key Features Section */}
+     
           <div className="mb-20">
             <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
               Why Choose RaqtKosh?
@@ -118,7 +119,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Testimonials Section */}
+         
           <div className="mb-20">
             <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
               What Our Donors Say
@@ -145,7 +146,7 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Statistics Section */}
+          
           <div>
             <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">
               Our Impact
