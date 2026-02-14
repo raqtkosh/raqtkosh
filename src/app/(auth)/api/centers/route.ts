@@ -5,14 +5,13 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     
-    // Extract pagination parameters
+  
     const page = parseInt(searchParams.get('page') || '1', 10);
     const pageSize = parseInt(searchParams.get('pageSize') || '10', 10);
     
-    // Extract the pincode parameter
     const pincode = searchParams.get('pincode');
     
-    // Default condition if pincode is provided
+   
     const whereCondition = pincode
       ? {
           postalCode: {
@@ -21,13 +20,13 @@ export async function GET(req: Request) {
         }
       : {};
 
-    // If pincode exists, apply that filter; otherwise, fetch all centers
+    
     const centers = await db.donationCenter.findMany({
       where: whereCondition,
-      take: pageSize,  // Limit the number of records per page
-      skip: (page - 1) * pageSize,  // Calculate the skip for pagination
+      take: pageSize,  
+      skip: (page - 1) * pageSize,  
       orderBy: {
-        name: 'asc'  // Sorting order for names
+        name: 'asc'  
       }
     });
 

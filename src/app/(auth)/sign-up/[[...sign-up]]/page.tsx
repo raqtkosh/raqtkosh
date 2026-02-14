@@ -9,7 +9,7 @@ export default function Signup() {
   const router = useRouter();
   const { isSignedIn } = useUser();
 
-  // Redirect to dashboard if user is already signed in
+ 
   useEffect(() => {
     if (isSignedIn) {
       router.push("/dashboard");
@@ -18,7 +18,7 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center relative">
-      {/* Background Image */}
+   
       <Image
         src="/images/loginpageimage.webp"
         alt="Background"
@@ -27,10 +27,10 @@ export default function Signup() {
         className="z-0"
       />
 
-      {/* Semi-Transparent Overlay */}
+      
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-      {/* Back Button */}
+   
       <button
         onClick={() => router.push("/")}
         className="absolute left-4 top-4 text-white hover:text-gray-300 flex items-center z-20"
@@ -50,7 +50,7 @@ export default function Signup() {
         Back to Home
       </button>
 
-      {/* Sign-Up Form */}
+    
       <SignUp
         path="/sign-up"
         routing="path"

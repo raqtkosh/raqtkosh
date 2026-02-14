@@ -1,4 +1,3 @@
-// app/api/hospitals/route.ts
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 

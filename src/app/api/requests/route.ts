@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getAuth } from '@clerk/nextjs/server';
 
-// GET /api/requests
+
 export async function GET(req: Request) {
   try {
     const { userId } = getAuth(req);
@@ -25,7 +25,7 @@ export async function GET(req: Request) {
   }
 }
 
-// POST /api/requests
+
 export async function POST(req: Request) {
   try {
     const { userId } = getAuth(req);

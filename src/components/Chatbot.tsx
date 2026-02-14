@@ -3,9 +3,8 @@ import { useState, useEffect, useRef } from "react";
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
-  const chatbotRef = useRef<HTMLDivElement>(null); // Ref for the chatbot container
+  const chatbotRef = useRef<HTMLDivElement>(null);
 
-  // Close chatbot when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -13,25 +12,23 @@ export default function Chatbot() {
         chatbotRef.current &&
         !chatbotRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false); // Close the chatbot
+        setIsOpen(false);
       }
     };
 
-    // Attach the event listener
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Cleanup the event listener
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]); // Re-run effect when `isOpen` changes
+  }, [isOpen]);
 
   return (
-    <div className="fixed bottom-4 right-4">
+    <div className="fixed bottom-10 left-10 z-50">
       {isOpen ? (
         <div
-          ref={chatbotRef} // Attach the ref to the chatbot container
-          className="w-80 h-[525px] bg-white shadow-lg rounded-lg flex flex-col" // Adjusted height to 525px (75% of 700px)
+          ref={chatbotRef}
+          className="w-80 h-[525px] bg-white shadow-lg rounded-lg flex flex-col"
         >
           <div className="p-4 bg-red-500 text-white rounded-t-lg flex justify-between items-center">
             <h3 className="font-bold">RaqtKosh Chatbot</h3>
@@ -40,9 +37,9 @@ export default function Chatbot() {
             </button>
           </div>
           <iframe
-            src="https://www.chatbase.co/chatbot-iframe/CZ5JPeKQN_MxdEQQRDFcg"
+            src="https://www.chatbase.co/chatbot-iframe/CZ5JPeKQN_MxdEQQRDFcg" 
             width="100%"
-            style={{ height: "100%", minHeight: "525px" }} // Adjusted height to 525px (75% of 700px)
+            style={{ height: "100%", minHeight: "525px" }}
             frameBorder="0"
           />
         </div>

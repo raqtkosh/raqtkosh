@@ -111,6 +111,13 @@ export default function DonationRequestsPage() {
       .includes(searchQuery.toLowerCase())
   );
 
+  // SORT pending first
+  const sortedDonations = [...filteredDonations].sort((a, b) => {
+    if (a.status === 'PENDING' && b.status !== 'PENDING') return -1;
+    if (a.status !== 'PENDING' && b.status === 'PENDING') return 1;
+    return 0;
+  });
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -154,10 +161,12 @@ export default function DonationRequestsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredDonations.length > 0 ? (
-              filteredDonations.map(item => (
+            {sortedDonations.length > 0 ? (
+              sortedDonations.map(item => (
                 <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.user.firstName} {item.user.lastName}</TableCell>
+                  <TableCell className="font-medium">
+                    {item.user.firstName} {item.user.lastName}
+                  </TableCell>
                   <TableCell>
                     {item.center ? `${item.center.city}, ${item.center.state}` : 'Not Assigned'}
                   </TableCell>

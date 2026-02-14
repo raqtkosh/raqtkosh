@@ -67,14 +67,14 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
     setOpenIndex(openIndex === index ? null : index);
   };
   const handleAddToGoogleCalendar = (eventDate: string, eventTitle: string) => {
-    // Format the event date to the Google Calendar format (YYYYMMDDTHHMMSSZ)
+    
     const startDate = new Date(eventDate);
     const startDateString = startDate.toISOString().replace(/-|:|\.\d+/g, "");
   
-    // Google Calendar URL with query parameters
+    
     const googleCalendarURL = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${startDateString}%2F${startDateString}&details=Add%20this%20event%20to%20your%20calendar&location=Online&trp=false`;
   
-    // Redirect to Google Calendar
+    
     window.open(googleCalendarURL, '_blank');
   };
 
@@ -222,7 +222,7 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
           <Card className="bg-white border border-gray-300 shadow-sm">
             <CardHeader className="pb-2">
               <CardDescription className="text-gray-500">Lives Impacted</CardDescription>
-              <CardTitle className="text-3xl text-gray-800">{userData.livesImpacted}</CardTitle>
+              <CardTitle className="text-3xl text-gray-800">{userData.totalDonations * 1}</CardTitle>
             </CardHeader>
           </Card>
           

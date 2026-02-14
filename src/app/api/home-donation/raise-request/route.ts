@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { userId } = getAuth(req); // <-- fix here!
+    const { userId } = getAuth(req); 
     if (!userId) return new NextResponse("Unauthorized", { status: 401 });
 
     const user = await db.user.findUnique({
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       data: {
         userId: user.id,
         bloodType: user.bloodType,
-        quantity: 1, // Default 1 unit
+        quantity: 1, 
         urgency: "normal",
         addressId: primaryAddress.id,
         hospital: "Home",

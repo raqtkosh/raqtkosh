@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @next/next/no-img-element */
 'use client';
-
 import { useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
 
 interface Reward {
   id: string;
@@ -16,7 +19,7 @@ interface Reward {
 interface UserReward {
   id: string;
   reward: Reward;
-  redeemedAt: string;
+  redeemedAt: Date;
   isUsed: boolean;
 }
 
@@ -33,6 +36,7 @@ export default function RewardDashboard() {
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [activeCategory, setActiveCategory] = useState('tshirts');
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const rewardsData: Reward[] = [
     {
@@ -86,25 +90,37 @@ export default function RewardDashboard() {
   ];
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchUserData = async () => {
       if (!user?.id) return;
 
       try {
-        // Simulate API call
-        setTimeout(() => {
-          setUserData({
-            points: 550, // Only using the value from DB
-            rewards: []
-          });
-          setLoading(false);
-        }, 500);
+        setLoading(true);
+        const response = await fetch('/api/rewards');
+        if (!response.ok) throw new Error('Failed to fetch user data');
+        
+        const data = await response.json();
+        setUserData({
+          points: data.points,
+          rewards: data.rewards.map((reward: any) => ({
+            ...reward,
+            redeemedAt: new Date(reward.redeemedAt),
+            reward: {
+              ...reward.reward,
+             
+              category: reward.reward.category || 'tshirts',
+              image: reward.reward.image || '/images/default-reward.jpg'
+            }
+          }))
+        });
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching user data:', error);
+        toast.error('Failed to load reward data');
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
+    fetchUserData();
   }, [user?.id]);
 
   const addToCart = (reward: Reward) => {
@@ -146,35 +162,61 @@ export default function RewardDashboard() {
   const canCheckout = cart.length > 0 && userData.points >= cartTotalPoints;
 
   const checkout = async () => {
-    try {
-      console.log('Checking out:', cart);
-      alert(`Successfully redeemed items for ${cartTotalPoints} points!`);
+    if (!canCheckout) return;
 
+    try {
+      setCheckoutLoading(true);
+      
+      const response = await fetch('/api/rewards/redeem', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: cart.map(item => ({
+            rewardId: item.id,
+            quantity: item.quantity
+          }))
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to process redemption');
+      }
+
+      const data = await response.json();
+      
+      // Update local state
       setUserData(prev => ({
-        ...prev,
-        points: prev.points - cartTotalPoints,
+        points: data.newPoints,
         rewards: [
           ...prev.rewards,
-          ...cart.map(item => ({
-            id: `new-${Date.now()}-${item.id}`,
-            reward: item,
-            redeemedAt: new Date().toISOString(),
-            isUsed: false
+          ...data.redeemedRewards.map((reward: any) => ({
+            ...reward,
+            redeemedAt: new Date(reward.redeemedAt),
+            reward: {
+              ...reward.reward,
+              category: reward.reward.category || 'tshirts',
+              image: reward.reward.image || '/images/default-reward.jpg'
+            }
           }))
         ]
       }));
 
       setCart([]);
+      toast.success('Rewards redeemed successfully!');
     } catch (error) {
       console.error('Error during checkout:', error);
-      alert('Failed to complete checkout. Please try again.');
+      toast.error('Failed to complete checkout. Please try again.');
+    } finally {
+      setCheckoutLoading(false);
     }
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
+        <Loader2 className="h-12 w-12 animate-spin text-red-600" />
       </div>
     );
   }
@@ -191,7 +233,7 @@ export default function RewardDashboard() {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center">
             <p className="text-5xl font-bold text-red-600">{userData.points}</p>
-            <p className="text-gray-900">Points (₹{userData.points})</p>
+            <p className="text-gray-900">Available Points</p>
           </div>
           <div className="text-center">
             <p className="text-lg font-semibold text-gray-900">Cart Total: {cartTotalPoints} points</p>
@@ -209,9 +251,11 @@ export default function RewardDashboard() {
             key={category}
             variant={activeCategory === category ? 'default' : 'outline'}
             onClick={() => setActiveCategory(category)}
-            className="whitespace-nowrap text-black"
+           // className="whitespace-nowrap"
+           className="bg-blue-600 hover:bg-blue-700 text-white"
           >
-            {category === 'tshirts' ? 'T-Shirts' : category === 'bottles' ? 'Bottles' : 'Notebooks & Pens'}
+            {category === 'tshirts' ? 'T-Shirts' : 
+             category === 'bottles' ? 'Bottles' : 'Notebooks & Pens'}
           </Button>
         ))}
       </div>
@@ -222,7 +266,7 @@ export default function RewardDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredRewards.map(reward => {
             const inCart = cart.find(item => item.id === reward.id);
-            const canAdd = userData.points >= reward.pointsCost;
+            const canAdd = userData.points >= reward.pointsCost * (inCart ? inCart.quantity + 1 : 1);
 
             return (
               <div key={reward.id} className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
@@ -238,16 +282,36 @@ export default function RewardDashboard() {
                   <p className="text-gray-600 text-sm my-2">{reward.description}</p>
                   <div className="flex justify-between items-center mt-4">
                     <span className="font-medium text-gray-900">
-                      {reward.pointsCost} points (₹{reward.pointsCost})
+                      {reward.pointsCost} points
                     </span>
                     {inCart ? (
-                      <div className="flex items-center gap-2">
-                        <Button size="sm" onClick={() => updateQuantity(reward.id, inCart.quantity - 1)} variant="outline">-</Button>
-                        <span>{inCart.quantity}</span>
-                        <Button size="sm" onClick={() => updateQuantity(reward.id, inCart.quantity + 1)} variant="outline" disabled={!canAdd}>+</Button>
+                      <div className="flex items-center gap-2">   
+                   
+                   <Button 
+  size="sm" 
+  onClick={() => updateQuantity(reward.id, inCart.quantity - 1)} 
+  className="bg-gray-200 text-black hover:bg-gray-300"
+>
+  -
+</Button>
+<span className="text-black">{inCart.quantity}</span>
+<Button 
+  size="sm" 
+  onClick={() => updateQuantity(reward.id, inCart.quantity + 1)} 
+  className="bg-gray-200 text-black hover:bg-gray-300"
+  disabled={!canAdd}
+>
+  +
+</Button>
+
                       </div>
                     ) : (
-                      <Button onClick={() => addToCart(reward)} disabled={!canAdd} className="bg-red-600 hover:bg-red-700 text-black" size="sm">
+                      <Button 
+                        onClick={() => addToCart(reward)} 
+                        disabled={!canAdd} 
+                        className="bg-red-600 hover:bg-red-700 text-white" 
+                        size="sm"
+                      >
                         Add to Cart
                       </Button>
                     )}
@@ -279,7 +343,14 @@ export default function RewardDashboard() {
                   <span className="font-medium">
                     {item.pointsCost * item.quantity} points
                   </span>
-                  <Button variant="ghost" size="sm" onClick={() => removeFromCart(item.id)}>Remove</Button>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => removeFromCart(item.id)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    Remove
+                  </Button>
                 </div>
               </div>
             ))}
@@ -296,11 +367,18 @@ export default function RewardDashboard() {
             </div>
             <Button 
               onClick={checkout}
-              disabled={!canCheckout}
-              className="w-full bg-red-600 hover:bg-red-700 text-black"
+              disabled={!canCheckout || checkoutLoading}
+              className="w-full bg-red-600 hover:bg-red-700 text-white"
               size="lg"
             >
-              Redeem Now
+              {checkoutLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                'Redeem Now'
+              )}
             </Button>
           </div>
         </section>
@@ -326,7 +404,7 @@ export default function RewardDashboard() {
                       {userReward.reward.name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(userReward.redeemedAt).toLocaleDateString()}
+                      {userReward.redeemedAt.toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${

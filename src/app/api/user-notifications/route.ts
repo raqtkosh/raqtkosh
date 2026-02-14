@@ -1,4 +1,3 @@
-// app/api/user-notifications/route.ts
 import { db } from '@/lib/db';
 import { getAuth } from '@clerk/nextjs/server';
 

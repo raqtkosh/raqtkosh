@@ -1,4 +1,3 @@
-// src/app/api/user/addresses/route.ts
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getAuth } from '@clerk/nextjs/server';

@@ -1,11 +1,12 @@
 'use client'
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react' 
 import { useUser } from '@clerk/nextjs'
 import { User, Address } from '@prisma/client'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Droplet, MapPin } from 'lucide-react' // ✅ Add this
+import { Droplet, MapPin } from 'lucide-react' 
+import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 type ExtendedUser = User & {
   addresses: Address[]
@@ -15,8 +16,7 @@ type StringAddressField = 'street' | 'city' | 'state' | 'postalCode' | 'country'
 
 export function ProfileForm({ userData }: { userData: ExtendedUser }) {
   const { user } = useUser()
-
-  const [formData, setFormData] = useState({
+  const [initialData, setInitialData] = useState({
     firstName: userData.firstName || '',
     lastName: userData.lastName || '',
     email: userData.email || '',
@@ -33,6 +33,14 @@ export function ProfileForm({ userData }: { userData: ExtendedUser }) {
       }
     ]
   })
+
+  const [formData, setFormData] = useState(initialData)
+  const [hasChanges, setHasChanges] = useState(false) 
+
+  useEffect(() => {
+    const isChanged = JSON.stringify(formData) !== JSON.stringify(initialData)
+    setHasChanges(isChanged)
+  }, [formData, initialData])
 
   const bloodTypeOptions = [
     { value: 'A_POSITIVE', label: 'A+' },
@@ -118,10 +126,23 @@ export function ProfileForm({ userData }: { userData: ExtendedUser }) {
         })
       })
       if (response.ok) {
-        // Handle success
+        setInitialData(formData)
+        toast.success('Profile updated successfully!', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 2000,
+        })
+      } else {
+        toast.error('Failed to update profile', {
+          position: toast.POSITION.TOP_RIGHT,
+          autoClose: 2000,
+        })
       }
     } catch (err) {
       console.error('Update failed:', err)
+      toast.error('An error occurred while updating profile', {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      })
     }
   }
 
@@ -346,9 +367,12 @@ export function ProfileForm({ userData }: { userData: ExtendedUser }) {
           <Button
             onClick={handleSubmit}
             className="bg-red-600 hover:bg-red-700 text-white px-6 py-3"
+            disabled={!hasChanges} 
           >
             Save Changes
+            
           </Button>
+          
         </div>
       </div>
     </div>

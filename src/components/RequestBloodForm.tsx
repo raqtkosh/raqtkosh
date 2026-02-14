@@ -13,7 +13,7 @@ import {
   SelectContent, 
   SelectItem 
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { toast } from "react-toastify";
 import { Loader2, HeartPulse, CheckCircle } from 'lucide-react';
 import { BloodType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
@@ -114,7 +114,7 @@ export function BloodRequestForm() {
       toast.success('Blood request submitted successfully!');
       setIsSuccess(true);
 
-      // Reset form
+    
       setPincode('');
       setSelectedHospital('');
       setBloodType(undefined);
@@ -270,7 +270,7 @@ export function BloodRequestForm() {
                   value={type}
                   className="text-gray-900 bg-white hover:bg-gray-100"
                 >
-                  {type.replace('_', '+')}
+                  {type.replace('_', ' ')}
                 </SelectItem>
               ))}
             </SelectContent>

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function HomeDonationDashboard() {
   const { user } = useUser();
@@ -12,7 +13,7 @@ export default function HomeDonationDashboard() {
   const [addressLoading, setAddressLoading] = useState(true);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Fetch user's primary address when component mounts
+ 
   useEffect(() => {
     const fetchPrimaryAddress = async () => {
       try {
@@ -51,11 +52,11 @@ export default function HomeDonationDashboard() {
       });
 
       if (res.ok) {
-        // Show success message
-        setSuccessMessage("Home donation request raised successfully!");
+        
+        toast.success("Home donation request raised successfully!");
         router.refresh();
         
-        // Hide success message after 5 seconds and redirect to dashboard
+      
         setTimeout(() => {
           setSuccessMessage(null);
           router.push("/dashboard"); // Redirect to the dashboard

@@ -1,5 +1,5 @@
 "use client";
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import { useState, useRef } from "react";
 export default function AboutUs() {
   const router = useRouter();
   const videoRef = useRef(null);
-  const [isMuted, setIsMuted] = useState(true); // Initially muted for autoplay
+  const [isMuted, setIsMuted] = useState(true); 
 
   const toggleMute = () => {
     if (videoRef.current) {
@@ -19,24 +19,24 @@ export default function AboutUs() {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-pink-50 to-red-50 font-sans">
-      {/* Header with Navigation Links */}
+     
       <div className="w-full flex justify-between items-center p-6 max-w-6xl mx-auto text-black backdrop-blur-md bg-white/30 rounded-lg shadow-sm mt-4">
         <h1 className="text-5xl font-bold font-barlow">RaqtKosh</h1>
         <nav className="flex gap-6">
           <button
-            onClick={() => router.push("/find-blood")}
+            onClick={() => router.push("/GetBlood")}
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Looking for Blood
           </button>
           <button
-            onClick={() => router.push("/donate")}
+            onClick={() => router.push("/DonateBlood")}
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Want to Donate Blood
           </button>
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/sign-in")}
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Blood Bank Login
@@ -44,23 +44,23 @@ export default function AboutUs() {
         </nav>
       </div>
 
-      {/* Main Content */}
+      
       <div className="w-full max-w-6xl px-4 py-12">
-        {/* Hero Section with Video */}
+       
         <div className="relative w-full h-[60vh] mb-12 rounded-lg overflow-hidden">
           <video
             ref={videoRef}
             autoPlay
             muted={isMuted}
             loop
-            controls // Enable native video controls
+            controls 
             className="w-full h-full object-cover"
           >
-            <source src="/videos/aboutusnew.mp4" type="video/mp4" /> {/* Replace with your video */}
+            <source src="/videos/aboutusnew.mp4" type="video/mp4" /> 
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-black bg-opacity-20 z-10"></div>
-          {/* Custom Mute Button */}
+         
           <button
             onClick={toggleMute}
             className="absolute bottom-4 right-4 z-20 p-2 bg-black bg-opacity-50 rounded-full text-white hover:bg-opacity-70 transition-colors duration-300"
@@ -105,8 +105,7 @@ export default function AboutUs() {
           </button>
         </div>
 
-        {/* Rest of the content remains the same */}
-        {/* Mission Section */}
+       
         <div className="bg-white p-8 rounded-xl shadow-lg mb-12">
           <h2 className="text-4xl font-bold mb-6 text-red-600">What We Do</h2>
           <p className="text-lg text-gray-700 mb-6">
@@ -115,7 +114,7 @@ export default function AboutUs() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="relative h-64">
               <Image
-                src="/images/mission-1.webp" // Replace with your image
+                src="/images/mission-1.jpg" 
                 alt="Mission Image 1"
                 layout="fill"
                 objectFit="cover"
@@ -124,7 +123,7 @@ export default function AboutUs() {
             </div>
             <div className="relative h-64">
               <Image
-                src="/images/mission-2.webp" // Replace with your image
+                src="/images/mission-2.jpg" 
                 alt="Mission Image 2"
                 layout="fill"
                 objectFit="cover"
@@ -134,7 +133,7 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* Why Donate Blood Section */}
+     
         <div className="bg-white p-8 rounded-xl shadow-lg mb-12">
           <h2 className="text-4xl font-bold mb-6 text-red-600">Why Donate Blood?</h2>
           <p className="text-lg text-gray-700 mb-6">
@@ -162,7 +161,7 @@ export default function AboutUs() {
           </div>
         </div>
 
-        {/* Testimonials Section */}
+  
         <div className="bg-white p-8 rounded-xl shadow-lg">
           <h2 className="text-4xl font-bold mb-6 text-red-600">Our Commitment</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

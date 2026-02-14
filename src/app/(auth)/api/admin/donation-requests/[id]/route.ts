@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
-  // Await the params object as per Next.js's requirement for dynamic routes
+  
   const { id } = await params;
 
   try {

@@ -6,7 +6,7 @@ import { useState } from "react";
 
 export default function LookingForBlood() {
   const router = useRouter();
-  const [step, setStep] = useState<number>(1); // Step 1: City, Step 2: Blood Type, Step 3: Availability
+  const [step, setStep] = useState<number>(1); 
   const [city, setCity] = useState<string | null>(null);
   const [bloodType, setBloodType] = useState<string | null>(null);
   const [isBloodAvailable, setIsBloodAvailable] = useState<boolean | null>(null);
@@ -16,18 +16,19 @@ export default function LookingForBlood() {
 
   const handleCitySelect = (selectedCity: string) => {
     setCity(selectedCity);
-    setStep(2); // Move to the next step (Blood Type)
+    setStep(2); 
   };
 
   const handleBloodTypeSelect = (selectedBloodType: string) => {
     setBloodType(selectedBloodType);
-    // Simulate API call to check blood availability
-    setIsBloodAvailable(Math.random() > 0.5); // Randomly set availability
-    setStep(3); // Move to the next step (Availability)
+   
+   // setIsBloodAvailable(Math.random() > 0.5); 
+    setIsBloodAvailable(true); 
+    setStep(3); 
   };
 
   const handleSignupLogin = () => {
-    router.push("/signup"); // Redirect to signup/login page
+    router.push("/sign-up"); 
   };
 
   return (
@@ -43,19 +44,19 @@ export default function LookingForBlood() {
             About Us
           </button>
           <button
-            onClick={() => router.push("/find-blood")}
+            onClick={() => router.push("/GetBlood")}
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Looking for Blood
           </button>
           <button
-            onClick={() => router.push("/donate")}
+            onClick={() => router.push("/DonateBlood")}
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Want to Donate Blood
           </button>
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/sign-in")}s
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Blood Bank Login

@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users, Droplet, ClipboardList, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Droplet, ClipboardList, Settings, LogOut } from 'lucide-react';
+import { SignOutButton } from '@clerk/nextjs';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
@@ -62,6 +63,16 @@ export default function AdminSidebar() {
           </Link>
         ))}
       </nav>
+
+       {/* Sign Out Button */}
+       <div className="p-6 border-t">
+        <SignOutButton>
+          <button className="flex items-center gap-2 text-red-600 hover:underline">
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </button>
+        </SignOutButton>
+      </div>
 
       <div className="p-6 border-t text-sm text-gray-500">
         © {new Date().getFullYear()} RaqtKosh

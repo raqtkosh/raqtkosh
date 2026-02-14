@@ -1,21 +1,17 @@
-// schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
   relationMode = "prisma"
 }
-
 enum Role {
   USER
   HOSPITAL
   ADMIN
   SUPER_ADMIN
 }
-
 enum BloodType {
   A_POSITIVE
   A_NEGATIVE
@@ -26,7 +22,6 @@ enum BloodType {
   O_POSITIVE
   O_NEGATIVE
 }
-
 enum DonationStatus {
   PENDING
   COMPLETED
@@ -110,7 +105,7 @@ model Donation {
   center      DonationCenter? @relation(fields: [centerId], references: [id])
   date        DateTime
   bloodType   BloodType
-  quantity    Int            @default(450) // in ml
+  quantity    Int            @default(450) // in ml we are consideringg
   status      DonationStatus @default(PENDING)
   pointsEarned Int           @default(10)
   createdAt   DateTime       @default(now())
@@ -125,15 +120,15 @@ model Request {
   userId      String
   user        User         @relation(fields: [userId], references: [id])
   bloodType   BloodType
-  quantity    Int          @default(1) // in units
+  quantity    Int          @default(1) // in units for blood request tht is 450 ml
   status      RequestStatus @default(PENDING)
-  urgency     String       @default("normal") // normal, urgent, emergency
+  urgency     String       @default("normal") 
   addressId   String
   address     Address      @relation(fields: [addressId], references: [id])
   hospital    String?
   patientName String?
   reason      String?
-  assignedTo  String?      // Admin ID who is handling this
+  assignedTo  String?     
   fulfilledAt DateTime?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
@@ -161,7 +156,7 @@ model BloodInventory {
   centerId    String
   center      DonationCenter @relation(fields: [centerId], references: [id])
   bloodType   BloodType
-  quantity    Int            @default(0) // in units
+  quantity    Int            @default(0) 
   lastUpdated DateTime       @default(now())
 
   @@index([centerId])
@@ -200,8 +195,8 @@ model Notification {
   title       String
   message     String
   isRead      Boolean  @default(false)
-  type        String   // 'request', 'donation', 'reward', etc.
-  relatedId   String?  // ID of related entity
+  type        String  
+  relatedId   String?  
   createdAt   DateTime @default(now())
   readAt      DateTime?
 
@@ -209,7 +204,6 @@ model Notification {
 }
 
 
-// Add this to your schema.prisma
 model GetBloodRequest {
   id          String       @id @default(uuid())
   userId      String
@@ -218,12 +212,12 @@ model GetBloodRequest {
   address     String
   bloodType   BloodType
   quantity    Int
-  urgency     String       // normal, urgent, emergency
+  urgency     String      
   status      RequestStatus @default(PENDING)
   createdAt   DateTime     @default(now())
   
-  // For admin actions
-  assignedTo  String?      // Admin ID who is handling this
+  
+  assignedTo  String?     
   fulfilledAt DateTime?
   
   @@index([userId])
@@ -235,12 +229,12 @@ model Referral {
   referrer    User          @relation("ReferrerToReferrals", fields: [referrerId], references: [id])
   name        String
   phoneNumber String
-  status      ReferralStatus @default(PENDING) // Using the enum now
+  status      ReferralStatus @default(PENDING) 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
   @@unique([referrerId, phoneNumber])
   @@index([referrerId])
   @@index([phoneNumber])
-  // Remove "User User[]" - not needed
+  
 }

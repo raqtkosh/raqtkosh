@@ -14,7 +14,7 @@ export async function GET(req: Request) {
       );
     }
 
-    // In production, implement proper geospatial search with PostGIS or similar
+   
     const centers = await db.donationCenter.findMany({
       take: 10,
       orderBy: {

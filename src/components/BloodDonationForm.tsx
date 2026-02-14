@@ -13,7 +13,7 @@ import {
   SelectContent, 
   SelectItem 
 } from '@/components/ui/select';
-import { toast } from 'sonner';
+import { toast } from "react-toastify";
 import { Loader2, HeartPulse, CheckCircle } from 'lucide-react';
 import { BloodType } from '@prisma/client';
 import { useRouter } from 'next/navigation';
@@ -114,7 +114,7 @@ export function BloodDonationForm() {
       toast.success('Blood donation request submitted successfully!');
       setIsSuccess(true);
 
-      // Reset form
+      
       setPincode('');
       setSelectedHospital('');
       setBloodType(undefined);
@@ -123,6 +123,7 @@ export function BloodDonationForm() {
       setHospitals([]);
       setErrors({});
       setHasSearched(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       toast.error(error.message || 'Failed to submit donation');
     } finally {
@@ -270,7 +271,7 @@ export function BloodDonationForm() {
                   value={type}
                   className="text-gray-900 bg-white hover:bg-gray-100"
                 >
-                  {type.replace('_', '+')}
+                  {type.replace('_', ' ')}
                 </SelectItem>
               ))}
             </SelectContent>

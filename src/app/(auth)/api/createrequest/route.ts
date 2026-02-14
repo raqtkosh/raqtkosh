@@ -5,13 +5,13 @@ import { BloodType } from '@prisma/client';
 
 export async function POST(req: Request) {
   try {
-    // Authentication check
+ 
     const { userId } = getAuth(req);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Parse request body
+   
     const body = await req.json();
     const { 
       hospitalId,
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       reason = ''
     } = body;
 
-    // Validate required fields
+    
     if (!hospitalId || !bloodType || !patientName) {
       return NextResponse.json(
         { error: 'Missing required fields' }, 
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validate blood type
+   
     if (!Object.values(BloodType).includes(bloodType)) {
       return NextResponse.json(
         { error: 'Invalid blood type' },
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validate quantity
+ 
     if (quantity <= 0 || quantity > 10) {
       return NextResponse.json(
         { error: 'Quantity must be between 1 and 10 units' },
@@ -46,7 +46,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Get hospital details
+    
     const hospital = await db.donationCenter.findUnique({
       where: { id: hospitalId }
     });
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Verify user exists in database
+   
     const user = await db.user.findUnique({
       where: { clerkId: userId }
     });
@@ -70,7 +70,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create the blood request
+    
     const request = await db.request.create({
       data: {
         user: {

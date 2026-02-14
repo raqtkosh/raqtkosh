@@ -50,7 +50,7 @@ export async function POST(req: Request) {
       return new Response('Missing email', { status: 400 });
     }
 
-    // Try to find user in DB first
+   
     let dbUser = await db.user.findUnique({
       where: { email },
     });
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       role: roleToSet,
     };
 
-    // Upsert the user in the DB
+ 
     dbUser = await db.user.upsert({
       where: { email },
       update: {
@@ -88,7 +88,7 @@ export async function POST(req: Request) {
       },
     });
 
-    // Always update Clerk's privateMetadata to match DB role
+   
     await clerkClient.users.updateUserMetadata(data.id, {
       privateMetadata: {
         role: dbUser.role,

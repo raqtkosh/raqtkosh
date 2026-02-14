@@ -2,7 +2,7 @@ import { getAuth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { NextApiRequest } from "next";
-import { RewardTier } from "@prisma/client"; // ✅ Import Enum properly
+import { RewardTier } from "@prisma/client"; 
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    // Ensure fulfilled requests are added as donations
+   
     for (const request of user.requests) {
       const existingDonation = await db.donation.findFirst({
         where: {
@@ -48,19 +48,19 @@ export async function POST(req: Request) {
       }
     }
 
-    // Calculate points
+ 
     const completedRequests = user.requests.length;
     const requestPoints = completedRequests * 50;
     const referralPoints = user.referrals.length * 100;
     const totalPoints = requestPoints + referralPoints;
 
-    // Determine reward tier properly
+   
     let rewardTier: RewardTier = RewardTier.BRONZE;
     if (totalPoints >= 5000) rewardTier = RewardTier.PLATINUM;
     else if (totalPoints >= 2500) rewardTier = RewardTier.GOLD;
     else if (totalPoints >= 1000) rewardTier = RewardTier.SILVER;
 
-    // Update user only if changed
+
     if (user.points !== totalPoints || user.rewardTier !== rewardTier) {
       await db.user.update({
         where: { clerkId: userId },

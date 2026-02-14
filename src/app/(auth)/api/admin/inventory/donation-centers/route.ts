@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     const page = parseInt(searchParams.get('page') || '1') || 1;
     const limit = 10;
 
-    // Case-insensitive search using raw SQL for count
+    
     const whereClause = query 
       ? {
           OR: [

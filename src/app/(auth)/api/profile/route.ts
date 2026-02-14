@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { getAuth } from '@clerk/nextjs/server'
@@ -12,7 +13,7 @@ export async function PUT(req: Request) {
 
     const body = await req.json()
     
-    // Update user data
+
     const updatedUser = await db.user.update({
       where: { clerkId },
       data: {
@@ -23,21 +24,18 @@ export async function PUT(req: Request) {
       },
     })
 
-    // Handle addresses in a transaction
+   
     const result = await db.$transaction(async (tx) => {
-      // First, find all addresses that have related requests
+      
       const addressesWithRequests = await tx.address.findMany({
         where: { 
           userId: updatedUser.id,
-          Request: { some: {} } // Only addresses with related requests
+          Request: { some: {} } 
         },
         include: { Request: true }
       })
 
-      // For each address with requests, either:
-      // 1. Delete the related requests first, or
-      // 2. Update them to point to a different address
-      // Here I'm showing option 1 - deleting the requests
+  
       await Promise.all(
         addressesWithRequests.map(address => 
           tx.request.deleteMany({
@@ -46,12 +44,12 @@ export async function PUT(req: Request) {
         )
       )
 
-      // Now it's safe to delete all addresses
+  
       await tx.address.deleteMany({
         where: { userId: updatedUser.id }
       })
 
-      // Create new addresses
+     
       const createdAddresses = await Promise.all(
         body.addresses.map((address: any) =>
           tx.address.create({

@@ -5,22 +5,22 @@ import { BloodType, DonationStatus } from '@prisma/client';
 
 export async function POST(req: Request) {
   try {
-    // Authentication check
+ 
     const { userId } = getAuth(req);
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Parse request body
+
     const body = await req.json();
     const { 
       hospitalId,
       bloodType,
       quantity = 1,
-      patientName // You can ignore patientName if not needed in donation
+      patientName 
     } = body;
 
-    // Validate required fields
+   
     if (!hospitalId || !bloodType) {
       return NextResponse.json(
         { error: 'Missing required fields' }, 
@@ -28,7 +28,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validate blood type
+    
     if (!Object.values(BloodType).includes(bloodType)) {
       return NextResponse.json(
         { error: 'Invalid blood type' },
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Validate quantity (assuming each unit = 450ml)
+    
     if (quantity <= 0 || quantity > 10) {
       return NextResponse.json(
         { error: 'Quantity must be between 1 and 10 units' },
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Get hospital details
+    
     const hospital = await db.donationCenter.findUnique({
       where: { id: hospitalId }
     });
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Verify user exists in database
+    
     const user = await db.user.findUnique({
       where: { clerkId: userId }
     });
@@ -68,16 +68,16 @@ export async function POST(req: Request) {
       );
     }
 
-    // Create the blood donation
+   
     const donation = await db.donation.create({
       data: {
         userId: user.id,
         centerId: hospital.id,
         date: new Date(),
         bloodType,
-        quantity: quantity * 450, // Each unit = 450 ml
-        status: DonationStatus.PENDING, // default
-        pointsEarned: 10 // default
+        quantity: quantity * 450, 
+        status: DonationStatus.PENDING, 
+        pointsEarned: 10 
       }
     });
 

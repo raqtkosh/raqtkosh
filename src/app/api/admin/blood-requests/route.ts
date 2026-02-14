@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Verify user is admin
+   
     const admin = await db.user.findUnique({
       where: { clerkId: userId },
       select: { role: true }
@@ -21,14 +21,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // 2. Get blood type from request
+
     const { bloodType } = await req.json();
 
     if (!bloodType) {
       return NextResponse.json({ error: "Blood type is required" }, { status: 400 });
     }
 
-    // 3. Find all eligible donors
+   
     const eligibleDonors = await db.user.findMany({
       where: {
         bloodType: bloodType as BloodType,
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       }
     });
 
-    // 4. Create notifications if donors found
+    
     if (eligibleDonors.length > 0) {
       const notifications = eligibleDonors.map(user => ({
         userId: user.id,
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // 5. Return response
+
     return NextResponse.json({
       success: true,
       donorCount: eligibleDonors.length,

@@ -1,10 +1,8 @@
-// src/app/api/admin/dashboard/route.ts
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 
 export async function GET() {
   try {
-    // Fetch counts in parallel
     const [users, donations, requests, recentActivities] = await Promise.all([
       db.user.count(),
       db.donation.count(),

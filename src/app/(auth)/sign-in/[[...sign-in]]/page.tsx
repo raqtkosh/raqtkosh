@@ -8,7 +8,6 @@ export default function SignInPage() {
   const router = useRouter();
   const { isSignedIn } = useUser();
 
-  // Redirect to dashboard if user is already signed in
   useEffect(() => {
     if (isSignedIn) {
       router.push("/dashboard");

@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Loader2, Gift, UserPlus, Copy, Check } from "lucide-react";
 
 interface Referral {
@@ -106,7 +106,7 @@ export default function ReferralPage() {
   const pendingReferrals = referrals.filter(r => r.status === 'PENDING').length;
 
   const copyToClipboard = () => {
-    const referralLink = `https://pet-curiously-deer.ngrok-free.app/sign-up?ref=${user?.id}`;
+    const referralLink = `https://externally-close-ferret.ngrok-free.app/sign-up?ref=${user?.id}`;
     navigator.clipboard.writeText(referralLink)
       .then(() => {
         setCopied(true);
@@ -266,7 +266,7 @@ export default function ReferralPage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-2">
           <Input
-            value={`https://pet-curiously-deer.ngrok-free.app/sign-up`}
+            value={`https://externally-close-ferret.ngrok-free.app/sign-up`}
             readOnly
             className="bg-white text-black border-gray-300 flex-grow"
           />

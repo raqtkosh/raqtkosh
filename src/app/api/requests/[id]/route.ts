@@ -3,10 +3,10 @@ import { db } from '@/lib/db';
 import { getAuth } from '@clerk/nextjs/server';
 import { RequestStatus } from '@prisma/client';
 
-// PATCH /api/requests/[id]
+
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // Ensure params are properly destructured
+    
     const { id } = params;
     if (!id) {
       return NextResponse.json({ error: 'Missing request ID' }, { status: 400 });
@@ -40,10 +40,10 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   }
 }
 
-// GET /api/requests/[id]
+
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
-    // Ensure params are properly destructured
+  
     const { id } = params;
     if (!id) {
       return NextResponse.json({ error: 'Missing request ID' }, { status: 400 });

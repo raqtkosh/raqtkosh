@@ -1,8 +1,9 @@
 "use client";
-
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+
+
 
 export default function DashboardRedirect({ role }: { role: string }) {
   const router = useRouter();
@@ -12,10 +13,10 @@ export default function DashboardRedirect({ role }: { role: string }) {
     if (!isLoaded) return;
 
     
-    // if (!user || user.privateMetadata?.role !== role) {
-    //   window.location.href = getTargetPath(role); 
-    //   return;
-    // }
+    if (!user || user.privateMetadata?.role !== role) {
+      window.location.href = getTargetPath(role); 
+      return;
+    }
     router.replace(getTargetPath(role));
   }, [isLoaded, user, role, router]);
 
@@ -25,7 +26,7 @@ export default function DashboardRedirect({ role }: { role: string }) {
       <p className="mt-4 text-white text-lg">Loading dashboard...</p>
     </div>
   );
-}
+} 
 
 function getTargetPath(role: string) {
   switch (role) {

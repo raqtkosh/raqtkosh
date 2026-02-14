@@ -18,7 +18,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // 1. Fetch Request
+
     const request = await db.request.findUnique({
       where: { id: requestId },
     });
@@ -30,11 +30,11 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Check Blood Stock
+ 
     const stock = await db.bloodInventory.findFirst({
       where: {
         bloodType: request.bloodType,
-        quantity: { gte: request.quantity }, // Enough quantity available
+        quantity: { gte: request.quantity }, 
       },
     });
 
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // 3. Find Matching Users
+ 
     const matchingUsers = await db.user.findMany({
       where: {
         bloodType: request.bloodType,
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // 4. Create Notifications
+  
     const notifications = matchingUsers.map(user => ({
       userId: user.id,
       title: 'Urgent Blood Request',

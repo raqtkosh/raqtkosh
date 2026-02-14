@@ -80,7 +80,7 @@ export default function AdminDashboard() {
       {/* logout button logout */}
       <div className="flex justify-between items-center mb-10">
         <h1 className="text-3xl font-bold">Dashboard Overview</h1>
-        <UserButton afterSignOutUrl="/" />
+      { /* <UserButton afterSignOutUrl="/" /> */}
       </div>
 
       {/* stats cards users */}

@@ -43,7 +43,7 @@ export async function POST(req: Request) {
       );
     }
 
-    // Check if record exists (soft unique constraint)
+    
     const existingRecord = await db.bloodInventory.findFirst({
       where: {
         centerId,
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
 
     let result;
     if (existingRecord) {
-      // Update existing record
+     
       result = await db.bloodInventory.update({
         where: { id: existingRecord.id },
         data: {
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
         include: { center: true }
       });
     } else {
-      // Create new record
+     
       result = await db.bloodInventory.create({
         data: {
           centerId,

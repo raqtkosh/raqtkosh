@@ -9,7 +9,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Fetch the user from the database using the Clerk user ID
+ 
     const user = await db.user.findUnique({
       where: { clerkId: userId },
       include: { addresses: true },
@@ -19,7 +19,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    // Fetch all requests for the user
+
     const requests = await db.request.findMany({
       where: { userId: user.id },
       include: {
