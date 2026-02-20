@@ -1,5 +1,4 @@
 'use client';
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
@@ -89,11 +88,12 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
       urgency: userData.canDonate ? 'high' : 'medium' 
     },
   ] : [];
+  const sectionFrame = 'bg-white border border-gray-200 rounded-lg shadow-sm';
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="bg-gray-100 px-4 py-4 sm:px-6 sm:py-6 lg:px-10 lg:py-8">
       {!userData.canDonate && (
-        <div className="bg-yellow-100 border-l-4 border-yellow-400 p-4 mb-6 rounded-lg shadow">
+        <div className="mb-4 rounded-lg border-l-4 border-yellow-400 bg-yellow-100 p-3 shadow-sm sm:mb-5 sm:p-4">
           <div className="flex items-center">
             <AlertCircle className="h-5 w-5 text-yellow-700" />
             <p className="ml-2 text-yellow-700">
@@ -103,11 +103,11 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="mx-auto max-w-6xl space-y-4 md:space-y-5 lg:max-w-7xl lg:space-y-6">
         {/* Header */}
-        <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+        <div className="flex items-center justify-between rounded-lg bg-white p-4 shadow-sm md:p-5 lg:p-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">Welcome, {user?.firstName || 'Donor'}</h1>
+            <h1 className="text-lg font-bold text-gray-800 sm:text-xl lg:text-2xl">Welcome, {user?.firstName || 'Donor'}</h1>
             <p className="text-gray-600">Thank you for being a life-saver!</p>
           </div>
           <div className="flex items-center gap-4">
@@ -118,11 +118,11 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
         </div>
 
         {/* Hero Status Card */}
-        <Card className="bg-white border border-gray-200 shadow-sm">
-          <CardHeader className="border-b border-gray-200">
-            <CardTitle className="text-lg font-semibold text-gray-800">Your Donor Status</CardTitle>
-          </CardHeader>
-          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+        <section className={sectionFrame}>
+          <div className="px-4 pt-4 sm:px-5 lg:px-6 lg:pt-5">
+            <h2 className="text-lg font-semibold text-gray-800">Your Donor Status</h2>
+          </div>
+          <div className="grid grid-cols-1 gap-3 p-4 sm:gap-4 sm:p-5 md:grid-cols-3 lg:p-6">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-full bg-red-100 text-red-600">
@@ -162,14 +162,14 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </section>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
           <Button 
             variant="outline"
-            className="h-16 border border-gray-300 bg-white hover:bg-red-50 hover:border-red-300"
+            className="h-12 border border-gray-300 bg-white hover:border-red-300 hover:bg-red-50 sm:h-14 lg:h-16"
             onClick={() => router.push(userData.canDonate ? '/dashboard/user/donateblood' : '#')}
             disabled={!userData.canDonate}
           >
@@ -180,7 +180,7 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
           </Button>
           <Button 
             variant="outline"
-            className="h-16 border border-gray-300 bg-white hover:bg-red-50 hover:border-red-300"
+            className="h-12 border border-gray-300 bg-white hover:border-red-300 hover:bg-red-50 sm:h-14 lg:h-16"
             onClick={() => router.push('/dashboard/user/request-blood')}
           >
             <div className="flex items-center gap-2 text-red-600">
@@ -190,7 +190,7 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
           </Button>
           <Button 
             variant="outline"
-            className="h-16 border border-gray-300 bg-white hover:bg-red-50 hover:border-red-300"
+            className="h-12 border border-gray-300 bg-white hover:border-red-300 hover:bg-red-50 sm:h-14 lg:h-16"
             onClick={() => router.push('/dashboard/user/profile')}
           >
             <div className="flex items-center gap-2 text-red-600">
@@ -200,7 +200,7 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
           </Button>
           <Button 
             variant="outline"
-            className="h-16 border border-gray-300 bg-white hover:bg-red-50 hover:border-red-300"
+            className="h-12 border border-gray-300 bg-white hover:border-red-300 hover:bg-red-50 sm:h-14 lg:h-16"
             onClick={() => router.push('/dashboard/user/refer')}
           >
             <div className="flex items-center gap-2 text-red-600">
@@ -211,45 +211,39 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
         </div>
 
         {/* Stats Widgets */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="bg-white border border-gray-300 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardDescription className="text-gray-500">Total Requests Completed</CardDescription>
-              <CardTitle className="text-3xl text-gray-800">{userData.totalDonations}</CardTitle>
-            </CardHeader>
-          </Card>
-          
-          <Card className="bg-white border border-gray-300 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardDescription className="text-gray-500">Lives Impacted</CardDescription>
-              <CardTitle className="text-3xl text-gray-800">{userData.totalDonations * 1}</CardTitle>
-            </CardHeader>
-          </Card>
-          
-          <Card className="bg-white border border-gray-300 shadow-sm">
-            <CardHeader className="pb-2">
-              <CardDescription className="text-gray-500">Current Tier</CardDescription>
-              <CardTitle className="text-3xl text-gray-800">{userData.rewardTier}</CardTitle>
-            </CardHeader>
-          </Card>
-        </div>
+        <section className={`${sectionFrame} p-4 sm:p-5 lg:p-6`}>
+          <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3 lg:gap-6">
+            <div>
+              <p className="text-gray-500 text-sm">Total Requests Completed</p>
+              <p className="text-2xl font-semibold text-gray-800 lg:text-3xl">{userData.totalDonations}</p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">Lives Impacted</p>
+              <p className="text-2xl font-semibold text-gray-800 lg:text-3xl">{userData.totalDonations * 1}</p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">Current Tier</p>
+              <p className="text-2xl font-semibold text-gray-800 lg:text-3xl">{userData.rewardTier}</p>
+            </div>
+          </div>
+        </section>
 
         {userData.bloodType?.toLowerCase() !== 'unknown' && (
-  <div className="space-y-4">
+  <div className="space-y-3 sm:space-y-4">
     {recommendedActions.map((action, index) => (
-      <Card 
+      <section 
         key={index} 
-        className={`bg-white border-l-4 ${
+        className={`${sectionFrame} border-l-4 ${
           action.urgency === 'high' ? 'border-l-red-500' : 'border-l-yellow-500'
-        } shadow-sm`}
+        }`}
       >
-        <CardHeader>
-          <CardTitle className="text-lg flex items-center gap-2 text-gray-800">
+        <div className="px-4 pt-4 sm:px-5 lg:px-6 lg:pt-5">
+          <h3 className="text-lg flex items-center gap-2 text-gray-800 font-semibold">
             <Bell className="h-5 w-5" />
             {action.title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="px-4 pb-4 sm:px-5 lg:px-6 lg:pb-5">
           <Button 
             variant={action.urgency === 'high' ? 'destructive' : 'outline'}
             className={action.urgency !== 'high' ? 'border-red-300 bg-white hover:bg-red-50 text-red-600' : ''}
@@ -257,18 +251,18 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
           >
             {action.urgency === 'high' ? 'DONATE' : 'Learn More'}
           </Button>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
     ))}
   </div>
 )}
 
         {/* Upcoming Events */}
-        <Card className="bg-white border border-gray-300 shadow-sm">
-  <CardHeader className="border-b border-gray-200">
-    <CardTitle className="text-lg font-semibold text-gray-800">Upcoming Events</CardTitle>
-  </CardHeader>
-  <CardContent className="space-y-4 p-6">
+        <section className={sectionFrame}>
+  <div className="px-4 pt-4 sm:px-5 lg:px-6 lg:pt-5">
+    <h2 className="text-lg font-semibold text-gray-800">Upcoming Events</h2>
+  </div>
+  <div className="space-y-3 p-4 sm:space-y-4 sm:p-5 lg:p-6">
     {upcomingEvents.map((event, index) => (
       <div key={index} className="flex items-start gap-4">
         <div className="bg-gray-200 rounded-lg p-3 flex flex-col items-center min-w-[60px]">
@@ -292,11 +286,11 @@ export default function UserDashboard({ userData }: { userData: UserData }) {
         </div>
       </div>
     ))}
-  </CardContent>
-</Card>
+  </div>
+</section>
 
         {/* Help Section */}
-        <div className="text-center bg-white p-6 rounded-lg shadow border border-gray-200">
+        <div className="rounded-lg border border-gray-200 bg-white p-4 text-center shadow-sm sm:p-5 lg:p-6">
           <p className="mb-2 text-gray-700">
             Need help?{' '}
             <a

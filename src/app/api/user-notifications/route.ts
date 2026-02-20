@@ -1,8 +1,8 @@
 import { db } from '@/lib/db';
-import { getAuth } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 
 export async function GET() {
-  const { userId } = getAuth();
+  const { userId } = await auth();
 
   if (!userId) {
     return new Response(JSON.stringify({ notifications: [] }), { status: 401 });

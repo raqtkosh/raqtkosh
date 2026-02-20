@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -34,47 +35,49 @@ export default function LookingForBlood() {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-pink-50 to-red-50 font-sans">
       {/* Header with Navigation Links */}
-      <div className="w-full flex justify-between items-center p-6 max-w-6xl mx-auto text-black backdrop-blur-md bg-white/30 rounded-lg shadow-sm mt-4">
-        <h1 className="text-5xl font-bold font-barlow">RaqtKosh</h1>
-        <nav className="flex gap-6">
-          <button
-            onClick={() => router.push("/about")}
+      <header className="w-full flex justify-between items-center px-6 py-4 max-w-6xl mx-auto text-black backdrop-blur-md bg-white/30 rounded-lg shadow-sm mt-4">
+        <h1 className="text-4xl md:text-5xl font-bold font-barlow">
+          <Link href="/">RaqtKosh</Link>
+        </h1>
+        <nav className="flex gap-5 md:gap-6">
+          <Link
+            href="/about"
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             About Us
-          </button>
-          <button
-            onClick={() => router.push("/GetBlood")}
+          </Link>
+          <Link
+            href="/GetBlood"
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Looking for Blood
-          </button>
-          <button
-            onClick={() => router.push("/DonateBlood")}
+          </Link>
+          <Link
+            href="/DonateBlood"
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Want to Donate Blood
-          </button>
-          <button
-            onClick={() => router.push("/sign-in")}s
+          </Link>
+          <Link
+            href="/sign-in"
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Blood Bank Login
-          </button>
+          </Link>
         </nav>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="w-full max-w-6xl px-4 py-12">
+      <div className="w-full max-w-6xl px-6 py-16">
         {/* Step 1: Select City */}
         {step === 1 && (
           <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-            <h2 className="text-4xl font-bold mb-6 text-red-600">Select Your City</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-red-600">Select Your City</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {cities.map((city) => (
                 <Button
                   key={city}
-                  className="bg-red-600 text-white font-semibold py-4 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300"
+                  className="bg-red-600 text-white font-semibold h-12 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300"
                   onClick={() => handleCitySelect(city)}
                 >
                   {city}
@@ -87,12 +90,12 @@ export default function LookingForBlood() {
         {/* Step 2: Select Blood Type */}
         {step === 2 && (
           <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-            <h2 className="text-4xl font-bold mb-6 text-red-600">Select Blood Type</h2>
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-red-600">Select Blood Type</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {bloodTypes.map((type) => (
                 <Button
                   key={type}
-                  className="bg-red-600 text-white font-semibold py-4 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300"
+                  className="bg-red-600 text-white font-semibold h-12 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300"
                   onClick={() => handleBloodTypeSelect(type)}
                 >
                   {type}
@@ -105,7 +108,7 @@ export default function LookingForBlood() {
         {/* Step 3: Blood Availability */}
         {step === 3 && (
           <div className="bg-white p-8 rounded-xl shadow-lg text-center">
-            <h2 className="text-4xl font-bold mb-6 text-red-600">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-red-600">
               {isBloodAvailable ? "Blood is Available!" : "Blood is Not Available"}
             </h2>
             <p className="text-lg text-gray-700 mb-6">
@@ -116,13 +119,13 @@ export default function LookingForBlood() {
             {isBloodAvailable && (
               <div className="flex justify-center gap-4">
                 <Button
-                  className="bg-red-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300"
+                  className="bg-red-600 text-white font-semibold h-12 px-8 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300"
                   onClick={handleSignupLogin}
                 >
                   Sign Up
                 </Button>
                 <Button
-                  className="bg-red-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300"
+                  className="bg-red-600 text-white font-semibold h-12 px-8 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300"
                   onClick={handleSignupLogin}
                 >
                   Login

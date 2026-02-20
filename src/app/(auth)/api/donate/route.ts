@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getAuth } from '@clerk/nextjs/server';
 import { BloodType, DonationStatus } from '@prisma/client';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
  
     const { userId } = getAuth(req);

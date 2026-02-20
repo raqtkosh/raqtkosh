@@ -12,9 +12,8 @@ export default function DashboardRedirect({ role }: { role: string }) {
   useEffect(() => {
     if (!isLoaded) return;
 
-    
-    if (!user || user.privateMetadata?.role !== role) {
-      window.location.href = getTargetPath(role); 
+    if (!user) {
+      router.replace("/sign-in?redirect=/dashboard");
       return;
     }
     router.replace(getTargetPath(role));

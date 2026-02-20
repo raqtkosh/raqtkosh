@@ -4,10 +4,12 @@ import { getAuth } from '@clerk/nextjs/server';
 import { RequestStatus } from '@prisma/client';
 
 
-export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json({ error: 'Missing request ID' }, { status: 400 });
     }
@@ -41,10 +43,12 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 }
 
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-  
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json({ error: 'Missing request ID' }, { status: 400 });
     }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { FormEvent } from "react";
 
 export default function ForgetPassword() {
   const router = useRouter();
@@ -14,7 +15,7 @@ export default function ForgetPassword() {
   const [error, setError] = useState("");
 
   // Validate email or phone number
-  const validateEmailOrPhone = (input) => {
+  const validateEmailOrPhone = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
     const phoneRegex = /^\d{10}$/; // 10-digit phone number
 
@@ -28,7 +29,7 @@ export default function ForgetPassword() {
   };
 
   // Handle sending verification code
-  const handleSendCode = async (e) => {
+  const handleSendCode = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -52,7 +53,7 @@ export default function ForgetPassword() {
   };
 
   // Handle verification code submission
-  const handleVerifyCode = async (e) => {
+  const handleVerifyCode = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 
@@ -70,7 +71,7 @@ export default function ForgetPassword() {
   };
 
   // Handle password reset
-  const handleResetPassword = async (e) => {
+  const handleResetPassword = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
 

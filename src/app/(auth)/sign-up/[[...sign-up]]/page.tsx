@@ -62,9 +62,6 @@ export default function Signup() {
             footerActionLink: "text-red-500 hover:text-red-600",
             socialButtonsBlockButton: "border border-gray-300 hover:bg-gray-50",
             socialButtonsBlockButtonText: "text-gray-700",
-          },
-          layout: {
-            container: "relative z-20 w-full max-w-md",
             card: "bg-white shadow-2xl rounded-xl border border-gray-200",
           },
         }}

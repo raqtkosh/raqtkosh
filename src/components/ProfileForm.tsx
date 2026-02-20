@@ -22,6 +22,7 @@ export function ProfileForm({ userData }: { userData: ExtendedUser }) {
     email: userData.email || '',
     phoneNumber: userData.phoneNumber || '',
     bloodType: userData.bloodType || '',
+    feedback: userData.feedback || '',
     addresses: userData.addresses.length > 0 ? userData.addresses : [
       {
         street: '',
@@ -53,7 +54,7 @@ export function ProfileForm({ userData }: { userData: ExtendedUser }) {
     { value: 'O_NEGATIVE', label: 'O-' }
   ]
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
@@ -128,19 +129,19 @@ export function ProfileForm({ userData }: { userData: ExtendedUser }) {
       if (response.ok) {
         setInitialData(formData)
         toast.success('Profile updated successfully!', {
-          position: toast.POSITION.TOP_RIGHT,
+          position: 'top-right',
           autoClose: 2000,
         })
       } else {
         toast.error('Failed to update profile', {
-          position: toast.POSITION.TOP_RIGHT,
+          position: 'top-right',
           autoClose: 2000,
         })
       }
     } catch (err) {
       console.error('Update failed:', err)
       toast.error('An error occurred while updating profile', {
-        position: toast.POSITION.TOP_RIGHT,
+        position: 'top-right',
         autoClose: 2000,
       })
     }
@@ -287,6 +288,25 @@ export function ProfileForm({ userData }: { userData: ExtendedUser }) {
                 </div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white border border-gray-200 shadow">
+          <CardHeader className="border-b border-gray-200">
+            <CardTitle className="text-lg font-semibold text-gray-800">Your Feedback</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Share your experience
+            </label>
+            <textarea
+              name="feedback"
+              value={formData.feedback}
+              onChange={handleChange}
+              rows={4}
+              placeholder="Write your feedback about RaqtKosh..."
+              className="w-full border border-gray-300 rounded-md py-2 px-3 bg-white text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+            />
           </CardContent>
         </Card>
 

@@ -2,12 +2,11 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useState, useRef } from "react";
 
 export default function AboutUs() {
-  const router = useRouter();
-  const videoRef = useRef(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isMuted, setIsMuted] = useState(true); 
 
   const toggleMute = () => {
@@ -20,34 +19,36 @@ export default function AboutUs() {
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-pink-50 to-red-50 font-sans">
      
-      <div className="w-full flex justify-between items-center p-6 max-w-6xl mx-auto text-black backdrop-blur-md bg-white/30 rounded-lg shadow-sm mt-4">
-        <h1 className="text-5xl font-bold font-barlow">RaqtKosh</h1>
-        <nav className="flex gap-6">
-          <button
-            onClick={() => router.push("/GetBlood")}
+      <header className="w-full flex justify-between items-center px-6 py-4 max-w-6xl mx-auto text-black backdrop-blur-md bg-white/30 rounded-lg shadow-sm mt-4">
+        <h1 className="text-4xl md:text-5xl font-bold font-barlow">
+          <Link href="/">RaqtKosh</Link>
+        </h1>
+        <nav className="flex gap-5 md:gap-6">
+          <Link
+            href="/GetBlood"
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Looking for Blood
-          </button>
-          <button
-            onClick={() => router.push("/DonateBlood")}
+          </Link>
+          <Link
+            href="/DonateBlood"
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Want to Donate Blood
-          </button>
-          <button
-            onClick={() => router.push("/sign-in")}
+          </Link>
+          <Link
+            href="/sign-in"
             className="text-lg hover:underline hover:text-red-600 transition-colors duration-300"
           >
             Blood Bank Login
-          </button>
+          </Link>
         </nav>
-      </div>
+      </header>
 
       
-      <div className="w-full max-w-6xl px-4 py-12">
+      <div className="w-full max-w-6xl px-6 py-16">
        
-        <div className="relative w-full h-[60vh] mb-12 rounded-lg overflow-hidden">
+        <div className="relative w-full h-[58vh] md:h-[60vh] mb-12 rounded-lg overflow-hidden">
           <video
             ref={videoRef}
             autoPlay
@@ -107,7 +108,7 @@ export default function AboutUs() {
 
        
         <div className="bg-white p-8 rounded-xl shadow-lg mb-12">
-          <h2 className="text-4xl font-bold mb-6 text-red-600">What We Do</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-red-600">What We Do</h2>
           <p className="text-lg text-gray-700 mb-6">
             At RaqtKosh, we organize blood donation camps and ensure that blood is delivered to your respective center within <span className="font-bold text-red-600">30 minutes</span>. We are a trusted partner, and the blood you receive undergoes <span className="font-bold text-red-600">100+ tests</span> to ensure safety and quality.
           </p>
@@ -116,18 +117,16 @@ export default function AboutUs() {
               <Image
                 src="/images/mission-1.jpg" 
                 alt="Mission Image 1"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
+                fill
+                className="rounded-lg object-cover"
               />
             </div>
             <div className="relative h-64">
               <Image
                 src="/images/mission-2.jpg" 
                 alt="Mission Image 2"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-lg"
+                fill
+                className="rounded-lg object-cover"
               />
             </div>
           </div>
@@ -135,7 +134,7 @@ export default function AboutUs() {
 
      
         <div className="bg-white p-8 rounded-xl shadow-lg mb-12">
-          <h2 className="text-4xl font-bold mb-6 text-red-600">Why Donate Blood?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-red-600">Why Donate Blood?</h2>
           <p className="text-lg text-gray-700 mb-6">
             Blood donation is a simple, safe, and life-saving act. Here are some reasons why you should consider donating blood:
           </p>
@@ -163,7 +162,7 @@ export default function AboutUs() {
 
   
         <div className="bg-white p-8 rounded-xl shadow-lg">
-          <h2 className="text-4xl font-bold mb-6 text-red-600">Our Commitment</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-red-600">Our Commitment</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-red-50 p-6 rounded-lg">
               <p className="text-lg italic text-gray-700">

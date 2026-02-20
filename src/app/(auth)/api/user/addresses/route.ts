@@ -1,16 +1,25 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { getAuth } from '@clerk/nextjs/server';
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const { userId } = getAuth(req);
-    if (!userId) {
+    const { userId: clerkUserId } = getAuth(req);
+    if (!clerkUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const dbUser = await db.user.findUnique({
+      where: { clerkId: clerkUserId },
+      select: { id: true },
+    });
+
+    if (!dbUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    }
+
     const addresses = await db.address.findMany({
-      where: { userId },
+      where: { userId: dbUser.id },
       select: {
         id: true,
         street: true,
@@ -35,11 +44,20 @@ export async function GET(req: Request) {
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const { userId } = getAuth(req);
-    if (!userId) {
+    const { userId: clerkUserId } = getAuth(req);
+    if (!clerkUserId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const dbUser = await db.user.findUnique({
+      where: { clerkId: clerkUserId },
+      select: { id: true },
+    });
+
+    if (!dbUser) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
     const body = await req.json();
@@ -56,14 +74,14 @@ export async function POST(req: Request) {
     // If setting as primary, unset any existing primary address
     if (isPrimary) {
       await db.address.updateMany({
-        where: { userId, isPrimary: true },
+        where: { userId: dbUser.id, isPrimary: true },
         data: { isPrimary: false },
       });
     }
 
     const newAddress = await db.address.create({
       data: {
-        userId,
+        userId: dbUser.id,
         street,
         city,
         state,

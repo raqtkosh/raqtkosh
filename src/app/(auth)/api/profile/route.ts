@@ -21,6 +21,7 @@ export async function PUT(req: Request) {
         lastName: body.lastName,
         phoneNumber: body.phoneNumber,
         bloodType: body.bloodType,
+        feedback: body.feedback?.trim() || null,
       },
     })
 

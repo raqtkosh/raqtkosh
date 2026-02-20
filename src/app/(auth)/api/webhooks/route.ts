@@ -3,7 +3,7 @@ import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
 import { User } from '@prisma/client';
 import { db } from '@/lib/db';
-import { clerkClient } from '@clerk/clerk-sdk-node';
+import { clerkClient } from '@clerk/nextjs/server';
 
 export async function POST(req: Request) {
   const SIGNING_SECRET = process.env.SIGNING_SECRET;
@@ -23,13 +23,13 @@ export async function POST(req: Request) {
     return new Response('Missing Svix headers', { status: 400 });
   }
 
-  const payload = await req.json();
-  const body = JSON.stringify(payload);
+  const payloadString = await req.text();
+  const payload = JSON.parse(payloadString);
 
   let evt: WebhookEvent;
 
   try {
-    evt = wh.verify(body, {
+    evt = wh.verify(payloadString, {
       'svix-id': svix_id,
       'svix-timestamp': svix_timestamp,
       'svix-signature': svix_signature,
@@ -62,6 +62,7 @@ export async function POST(req: Request) {
       firstName: data.first_name,
       lastName: data.last_name,
       email,
+      profileImageUrl: data.image_url || null,
       phoneNumber: data.phone_numbers?.[0]?.phone_number,
       clerkId: data.id,
       role: roleToSet,
@@ -73,6 +74,7 @@ export async function POST(req: Request) {
       update: {
         firstName: userPayload.firstName,
         lastName: userPayload.lastName,
+        profileImageUrl: userPayload.profileImageUrl,
         phoneNumber: userPayload.phoneNumber,
         role: roleToSet,
         clerkId: userPayload.clerkId,
@@ -81,6 +83,7 @@ export async function POST(req: Request) {
         id: userPayload.id!,
         firstName: userPayload.firstName!,
         lastName: userPayload.lastName!,
+        profileImageUrl: userPayload.profileImageUrl || null,
         phoneNumber: userPayload.phoneNumber!,
         email: userPayload.email!,
         role: roleToSet,
@@ -89,7 +92,8 @@ export async function POST(req: Request) {
     });
 
    
-    await clerkClient.users.updateUserMetadata(data.id, {
+    const client = await clerkClient();
+    await client.users.updateUserMetadata(data.id, {
       privateMetadata: {
         role: dbUser.role,
       },
@@ -101,8 +105,9 @@ export async function POST(req: Request) {
   if (evt.type === 'user.deleted') {
     const userId = data.id;
 
-    await db.user.delete({
-      where: { id: userId },
+    // Clerk sends its own user id; remove by clerkId and make it idempotent.
+    await db.user.deleteMany({
+      where: { clerkId: userId },
     });
 
     console.log(`User deleted from DB: ${userId}`);

@@ -80,7 +80,6 @@ export default function DonationRequestsPage() {
       toast({
         title: 'Success',
         description: 'Donation status updated successfully',
-        variant: 'success',
       });
     } catch (error) {
       toast({

@@ -136,7 +136,7 @@ export default function CreateBloodRequestPage() {
               <label className="block text-sm font-medium mb-2 text-gray-700">Blood Type *</label>
               <Select 
                 value={bloodType} 
-                onValueChange={setBloodType}
+                onValueChange={(value) => setBloodType(value as BloodType)}
               >
                 <SelectTrigger className="w-full text-black bg-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                   <SelectValue placeholder="Select blood type" className="text-black" />

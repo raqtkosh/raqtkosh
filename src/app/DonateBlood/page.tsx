@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -72,29 +73,31 @@ export default function DonateBlood() {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-pink-50 to-red-50 font-sans">
-      <Toaster position="top-right" />
+      <Toaster />
 
       {/* Header */}
-      <div className="w-full flex justify-between items-center p-6 max-w-6xl mx-auto text-black backdrop-blur-md bg-white/30 rounded-lg shadow-sm mt-4">
-        <h1 className="text-5xl font-bold font-barlow">RaqtKosh</h1>
-        <nav className="flex gap-6">
-          <button onClick={() => router.push("/about")} className="text-lg hover:underline hover:text-red-600 transition-colors duration-300">About Us</button>
-          <button onClick={() => router.push("/GetBlood")} className="text-lg hover:underline hover:text-red-600 transition-colors duration-300">Looking for Blood</button>
-          <button onClick={() => router.push("/DonateBlood")} className="text-lg hover:underline hover:text-red-600 transition-colors duration-300">Want to Donate Blood</button>
-          <button onClick={() => router.push("/sign-in")} className="text-lg hover:underline hover:text-red-600 transition-colors duration-300">Blood Bank Login</button>
+      <header className="w-full flex justify-between items-center px-6 py-4 max-w-6xl mx-auto text-black backdrop-blur-md bg-white/30 rounded-lg shadow-sm mt-4">
+        <h1 className="text-4xl md:text-5xl font-bold font-barlow">
+          <Link href="/">RaqtKosh</Link>
+        </h1>
+        <nav className="flex gap-5 md:gap-6">
+          <Link href="/about" className="text-lg hover:underline hover:text-red-600 transition-colors duration-300">About Us</Link>
+          <Link href="/GetBlood" className="text-lg hover:underline hover:text-red-600 transition-colors duration-300">Looking for Blood</Link>
+          <Link href="/DonateBlood" className="text-lg hover:underline hover:text-red-600 transition-colors duration-300">Want to Donate Blood</Link>
+          <Link href="/sign-in" className="text-lg hover:underline hover:text-red-600 transition-colors duration-300">Blood Bank Login</Link>
         </nav>
-      </div>
+      </header>
 
       {/* Main Content */}
-      <div className="w-full max-w-6xl px-4 py-12">
+      <div className="w-full max-w-6xl px-6 py-16">
         {/* Auth CTA */}
         <div className="bg-white p-8 rounded-xl shadow-lg mb-12 text-center">
-          <h2 className="text-4xl font-bold mb-6 text-red-600">Sign Up or Login to Get More Rewards!</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-red-600">Sign Up or Login to Get More Rewards!</h2>
           <div className="flex justify-center gap-4">
-            <Button onClick={() => router.push("/sign-up")} className="bg-red-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300">
+            <Button onClick={() => router.push("/sign-up")} className="bg-red-600 text-white font-semibold h-12 px-8 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300">
               Sign Up
             </Button>
-            <Button onClick={() => router.push("/sign-in")} className="bg-red-600 text-white font-semibold px-8 py-4 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300">
+            <Button onClick={() => router.push("/sign-in")} className="bg-red-600 text-white font-semibold h-12 px-8 rounded-lg shadow-lg hover:bg-red-700 hover:scale-105 transition-transform duration-300">
               Login
             </Button>
           </div>

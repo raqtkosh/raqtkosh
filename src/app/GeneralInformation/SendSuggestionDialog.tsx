@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ChangeEvent, FormEvent } from "react";
 
 export default function SendSuggestionDialog({ onClose }: { onClose: () => void }) {
   const [suggestionData, setSuggestionData] = useState({
@@ -18,13 +19,15 @@ export default function SendSuggestionDialog({ onClose }: { onClose: () => void 
   }, [onClose]);
 
   // Handle input changes
-  const handleSuggestionChange = (e) => {
+  const handleSuggestionChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setSuggestionData({ ...suggestionData, [name]: value });
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("Suggestion Data:", suggestionData);
     alert("Thank you for your suggestion!");

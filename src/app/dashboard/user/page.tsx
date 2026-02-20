@@ -24,7 +24,7 @@ export default async function DashboardPage() {
   });
 
   if (!dbUser) {
-    redirect('/onboarding');
+    redirect('/dashboard/user/profile');
   }
 
   // Calculate statistics from database records
@@ -33,6 +33,9 @@ export default async function DashboardPage() {
   const points = dbUser.points;
   //const rewardTier = dbUser.rewardTier?default 'None';// Default to 'None' if no rewards found
   const rewardTier = dbUser.rewardTier || 'NONE'; 
+  const tierThresholds = [0, 500, 1500, 3000, 5000];
+  const nextTierThreshold = tierThresholds.find((threshold) => threshold > points) ?? 0;
+  const nextReward = nextTierThreshold > 0 ? nextTierThreshold - points : 0;
   
   // Determine reward tier based on points (using the actual enum values from schema)
   
@@ -62,7 +65,7 @@ export default async function DashboardPage() {
     totalDonations, // Now properly fetched from donations count
     livesImpacted,  // Calculated from actual donations
     rewardTier,     // Determined from actual points
-   // nextReward,
+    nextReward,
     healthStatus,
     lastDonation,
     canDonate

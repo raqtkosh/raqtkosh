@@ -55,8 +55,10 @@ model User {
   email       String      @unique
   firstName   String?
   lastName    String?
+  profileImageUrl String?
   phoneNumber String?
   bloodType   BloodType?
+  feedback    String?
   role        Role        @default(USER)
   points      Int         @default(0)
   rewardTier  RewardTier?
