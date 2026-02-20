@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { hospitalId, bloodType, quantity, patientName, urgency, reason } = body;
+    const { hospitalId, bloodType, quantity, patientName, urgency, reason, governmentId, prescriptionUrl } = body;
 
     const hospital = await db.donationCenter.findUnique({ where: { id: hospitalId } });
     if (!hospital) {
@@ -68,6 +68,8 @@ export async function POST(req: NextRequest) {
         urgency,
         patientName,
         reason,
+        governmentId,
+        prescriptionUrl,
         hospital: hospital.name,
         addressId: address.id,
       },

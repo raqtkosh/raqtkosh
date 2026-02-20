@@ -32,7 +32,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow z-50">
           <UserSidebar />
         </div>
-        <main className="flex-1 ml-64 p-6">
+        <main className="flex-1 ml-64 py-8 px-6">
           {children}
         </main>
       </SignedIn>

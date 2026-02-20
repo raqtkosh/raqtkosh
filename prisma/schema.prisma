@@ -128,9 +128,11 @@ model Request {
   addressId   String
   address     Address      @relation(fields: [addressId], references: [id])
   hospital    String?
-  patientName String?
-  reason      String?
-  assignedTo  String?     
+  patientName      String?
+  reason           String?
+  governmentId     String?   // Aadhaar / PAN / Passport number
+  prescriptionUrl  String?   // Cloudinary URL of uploaded prescription image/PDF
+  assignedTo       String?
   fulfilledAt DateTime?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
